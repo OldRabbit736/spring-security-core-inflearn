@@ -8,6 +8,9 @@ import java.util.Collection;
 
 public class AccountContext extends User {
 
+    /**
+     * AuthenticationProvider::authenticate 에서 UsernamePasswordAuthenticationToken 의 principal 로서 사용하기 위해 생성한 필드
+     */
     private final Account account;
 
     public AccountContext(Account account, Collection<? extends GrantedAuthority> authorities) {
