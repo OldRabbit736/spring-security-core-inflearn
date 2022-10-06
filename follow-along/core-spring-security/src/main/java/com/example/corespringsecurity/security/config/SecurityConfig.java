@@ -24,6 +24,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+        /*
+        UsernamePasswordAuthenticationFilter 등에서 토큰(username, password 만 담은)을 담는 것 까지는 자동으로 해 주고
+        그 이후의 AuthenticationProvider 나 UserDetailsService 는 사용자가 정의해서 사용 가능하다.
+         */
         //auth.userDetailsService(userDetailsService);
         auth.authenticationProvider(authenticationProvider());
     }
@@ -49,9 +53,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .anyRequest().authenticated()
 
                 .and()
-                .formLogin()   // LoginUrlAuthenticationEntryPoint 에 의해 로그인 페이지로 이동
-                .loginPage("/login")
-                .loginProcessingUrl("/login_proc")
+                .formLogin()
+                .loginPage("/login")    // LoginUrlAuthenticationEntryPoint 지정
+                .loginProcessingUrl("/login_proc")  // UsernamePasswordAuthenticationFilter 의 url matcher 지정
                 .defaultSuccessUrl("/")
                 .permitAll();
     }
