@@ -49,7 +49,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .anyRequest().authenticated()
 
                 .and()
-                .formLogin();   // LoginUrlAuthenticationEntryPoint 에 의해 로그인 페이지로 이동
+                .formLogin()   // LoginUrlAuthenticationEntryPoint 에 의해 로그인 페이지로 이동
+                .loginPage("/login")
+                .loginProcessingUrl("/login_proc")
+                .defaultSuccessUrl("/")
+                .permitAll();
     }
 
     /**
