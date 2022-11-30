@@ -1,5 +1,6 @@
 package com.example.corespringsecurity.controller.auth;
 
+import com.example.corespringsecurity.domain.Account;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
@@ -30,5 +31,14 @@ public class AuthController {
             new SecurityContextLogoutHandler().logout(request, response, authentication);   // session 무효화, SecurityContext, Authentication 없애기
         }
         return "redirect:/login";
+    }
+
+    @GetMapping("/denied")
+    public String accessDenied(@RequestParam(value = "exception", required = false) String exception, Model model) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Account account = (Account) authentication.getPrincipal();
+        model.addAttribute("username", account.getUsername());
+        model.addAttribute("exception", exception);
+        return "auth/denied";
     }
 }
