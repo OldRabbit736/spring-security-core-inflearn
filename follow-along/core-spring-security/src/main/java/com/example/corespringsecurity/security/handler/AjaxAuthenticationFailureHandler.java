@@ -22,7 +22,7 @@ public class AjaxAuthenticationFailureHandler implements AuthenticationFailureHa
 
     @Override
     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException, ServletException {
-        String errMsg = "Invalid Username or Password";
+        String errMsg = exception.getMessage();
         if (exception instanceof BadCredentialsException) {
             errMsg = "Invalid Username or Password";
         } else if (exception instanceof DisabledException) {

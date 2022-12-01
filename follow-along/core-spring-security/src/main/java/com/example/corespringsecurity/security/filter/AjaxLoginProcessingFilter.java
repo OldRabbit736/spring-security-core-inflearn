@@ -3,6 +3,7 @@ package com.example.corespringsecurity.security.filter;
 import com.example.corespringsecurity.domain.AccountDto;
 import com.example.corespringsecurity.security.token.AjaxAuthenticationToken;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter;
@@ -29,7 +30,7 @@ public class AjaxLoginProcessingFilter extends AbstractAuthenticationProcessingF
         }
         AccountDto accountDto = objectMapper.readValue(request.getReader(), AccountDto.class);
         if (!StringUtils.hasLength(accountDto.getUsername()) || !StringUtils.hasLength(accountDto.getPassword())) {
-            throw new IllegalArgumentException("Username or Password is empty");
+            throw new AuthenticationServiceException("Username or Password is empty");
         }
         AjaxAuthenticationToken ajaxAuthenticationToken = new AjaxAuthenticationToken(accountDto.getUsername(), accountDto.getPassword());
         return getAuthenticationManager().authenticate(ajaxAuthenticationToken);
