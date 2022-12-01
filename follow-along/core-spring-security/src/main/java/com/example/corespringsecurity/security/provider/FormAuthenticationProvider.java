@@ -16,7 +16,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
  * UsernamePasswordAuthenticationFilter 의 AuthenticationManager 가 가지고 있는 AuthenticationProvider 로 등록될 클래스?
  */
 @RequiredArgsConstructor
-public class CustomAuthenticationProvider implements AuthenticationProvider {
+public class FormAuthenticationProvider implements AuthenticationProvider {
 
     private final UserDetailsService userDetailsService;
     private final PasswordEncoder passwordEncoder;

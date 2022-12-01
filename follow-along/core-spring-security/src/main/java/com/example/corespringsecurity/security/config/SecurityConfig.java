@@ -1,7 +1,7 @@
 package com.example.corespringsecurity.security.config;
 
-import com.example.corespringsecurity.security.handler.CustomAccessDeniedHandler;
-import com.example.corespringsecurity.security.provider.CustomAuthenticationProvider;
+import com.example.corespringsecurity.security.handler.FormAccessDeniedHandler;
+import com.example.corespringsecurity.security.provider.FormAuthenticationProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
@@ -36,7 +36,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private final PasswordEncoder passwordEncoder;
 
     @Override
-    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+    protected void configure(AuthenticationManagerBuilder auth) {
         /*
         UsernamePasswordAuthenticationFilter 등에서 토큰(username, password 만 담은)을 담는 것 까지는 자동으로 해 주고
         그 이후의 AuthenticationProvider 나 UserDetailsService 는 사용자가 정의해서 사용 가능하다.
@@ -47,7 +47,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Bean
     public AuthenticationProvider authenticationProvider() {
-        return new CustomAuthenticationProvider(userDetailsService, passwordEncoder);
+        return new FormAuthenticationProvider(userDetailsService, passwordEncoder);
     }
 
     @Override
@@ -80,9 +80,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Bean
     public AccessDeniedHandler accessDeniedHandler() {
-        CustomAccessDeniedHandler customAccessDeniedHandler = new CustomAccessDeniedHandler();
-        customAccessDeniedHandler.setErrorPage("/denied");
-        return customAccessDeniedHandler;
+        FormAccessDeniedHandler formAccessDeniedHandler = new FormAccessDeniedHandler();
+        formAccessDeniedHandler.setErrorPage("/denied");
+        return formAccessDeniedHandler;
     }
 
 
@@ -90,7 +90,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
      * CSS, IMAGES 등 리소스 파일은 보안 필터를 거치지 않도록 한다.
      */
     @Override
-    public void configure(WebSecurity web) throws Exception {
+    public void configure(WebSecurity web) {
         web.ignoring().requestMatchers(PathRequest.toStaticResources().atCommonLocations());
     }
 
