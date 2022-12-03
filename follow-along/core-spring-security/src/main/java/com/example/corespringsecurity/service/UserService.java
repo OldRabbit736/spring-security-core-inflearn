@@ -1,6 +1,6 @@
 package com.example.corespringsecurity.service;
 
-import com.example.corespringsecurity.domain.Account;
+import com.example.corespringsecurity.domain.entity.Account;
 
 public interface UserService {
 
