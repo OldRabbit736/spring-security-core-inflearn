@@ -27,23 +27,18 @@ public class FormAuthenticationProvider implements AuthenticationProvider {
      */
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
-
         String username = authentication.getName();
         String password = (String) authentication.getCredentials();
-
         AccountContext accountContext = (AccountContext) userDetailsService.loadUserByUsername(username);
-
         if (!passwordEncoder.matches(password, accountContext.getAccount().getPassword())) {
             throw new BadCredentialsException("BadCredentialsException");
         }
-
         // 그 외 추가로 검증할 것들 ...
         FormWebAuthenticationDetails formWebAuthenticationDetails = (FormWebAuthenticationDetails) authentication.getDetails();
         String secretKey = formWebAuthenticationDetails.getSecretKey();
         if (!secretKey.equals("secret")) {
             throw new InsufficientAuthenticationException("InsufficientAuthenticationException");
         }
-
         return new UsernamePasswordAuthenticationToken(accountContext.getAccount(), null, accountContext.getAuthorities());
     }
 
