@@ -8,6 +8,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
 
@@ -32,6 +34,14 @@ public class RoleController {
         RoleDto role = new RoleDto();
         model.addAttribute("role", role);
         return "admin/role/detail";
+    }
+
+    @PostMapping("/admin/roles")
+    public String createRole(RoleDto roleDto) {
+        ModelMapper modelMapper = new ModelMapper();
+        Role role = modelMapper.map(roleDto, Role.class);
+        roleService.createRole(role);
+        return "redirect:/admin/roles";
     }
 
     @GetMapping("/admin/roles/{id}")

@@ -42,4 +42,12 @@ public class Role {
         this.roleName = roleName;
         this.roleDesc = roleDesc;
     }
+
+    public void setRoleName(String roleName) {
+        this.roleName = roleName;
+    }
+
+    public void setRoleDesc(String roleDesc) {
+        this.roleDesc = roleDesc;
+    }
 }
