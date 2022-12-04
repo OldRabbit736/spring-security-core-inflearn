@@ -9,6 +9,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 
 import java.util.List;
 
@@ -28,6 +29,12 @@ public class UserManagerController {
         List<Account> accounts = userService.getUsers();
         model.addAttribute("accounts", accounts);
         return "admin/user/list";
+    }
+
+    @PostMapping("/admin/accounts")
+    public String modifyUser(AccountDto accountDto) {
+        userService.modifyUser(accountDto);
+        return "redirect:/admin/accounts";
     }
 
     @GetMapping(value = "/admin/accounts/{id}")
