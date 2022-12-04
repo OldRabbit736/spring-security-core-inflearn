@@ -11,6 +11,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 
 import java.util.HashSet;
 import java.util.List;
@@ -35,6 +36,17 @@ public class ResourcesController {
         List<Resources> resources = resourcesService.getResources();
         model.addAttribute("resources", resources);
         return "admin/resource/list";
+    }
+
+    @PostMapping("/admin/resources")
+    public String createResources(ResourcesDto resourcesDto) {
+        Role role = roleRepository.findByRoleName(resourcesDto.getRoleName());
+        Resources resources = modelMapper.map(resourcesDto, Resources.class);
+        Set<Role> roles = new HashSet<>();
+        roles.add(role);
+        resources.setRoleSet(roles);
+        resourcesService.createResources(resources);
+        return "redirect:/admin/resources";
     }
 
     @GetMapping("/admin/resources/register")
