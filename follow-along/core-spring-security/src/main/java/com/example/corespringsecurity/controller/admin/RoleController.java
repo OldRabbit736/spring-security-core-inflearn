@@ -27,6 +27,13 @@ public class RoleController {
         return "admin/role/list";
     }
 
+    @GetMapping("/admin/roles/register")
+    public String viewRoles(Model model) {
+        RoleDto role = new RoleDto();
+        model.addAttribute("role", role);
+        return "admin/role/detail";
+    }
+
     @GetMapping("/admin/roles/{id}")
     public String getRole(@PathVariable Long id, Model model) {
         Role role = roleService.getRole(id);
