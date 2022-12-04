@@ -1,6 +1,6 @@
 package com.example.corespringsecurity.service;
 
-import com.example.corespringsecurity.domain.AccountDto;
+import com.example.corespringsecurity.domain.dto.AccountDto;
 import com.example.corespringsecurity.domain.entity.Account;
 
 import java.util.List;

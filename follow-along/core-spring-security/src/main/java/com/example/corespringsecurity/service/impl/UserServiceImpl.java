@@ -1,12 +1,11 @@
 package com.example.corespringsecurity.service.impl;
 
-import com.example.corespringsecurity.domain.AccountDto;
+import com.example.corespringsecurity.domain.dto.AccountDto;
 import com.example.corespringsecurity.domain.entity.Account;
 import com.example.corespringsecurity.domain.entity.Role;
 import com.example.corespringsecurity.repository.RoleRepository;
 import com.example.corespringsecurity.repository.UserRepository;
 import com.example.corespringsecurity.service.UserService;
-import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;

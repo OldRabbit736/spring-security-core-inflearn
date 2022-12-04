@@ -1,6 +1,6 @@
 package com.example.corespringsecurity.controller.admin;
 
-import com.example.corespringsecurity.domain.AccountDto;
+import com.example.corespringsecurity.domain.dto.AccountDto;
 import com.example.corespringsecurity.domain.entity.Account;
 import com.example.corespringsecurity.domain.entity.Role;
 import com.example.corespringsecurity.service.RoleService;
