@@ -46,6 +46,8 @@ public class SetupDataLoader implements ApplicationListener<ContextRefreshedEven
         roles.add(adminRole);
         Resources resources = createResourceIfNotFound("/admin/**", "", roles, "url");
         Account account = createUserIfNotFound("admin", "pass", "admin@gmail.com", 10, roles);
+
+        createRoleIfNotFound("ROLE_USER", "유저");
     }
 
     @Transactional
