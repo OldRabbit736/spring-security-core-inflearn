@@ -1,8 +1,10 @@
 package com.example.corespringsecurity.security.config;
 
+import com.example.corespringsecurity.security.factory.UrlResourcesMapFactoryBean;
 import com.example.corespringsecurity.security.handler.FormAccessDeniedHandler;
 import com.example.corespringsecurity.security.metadatasource.UrlFilterInvocationSecurityMetadataSource;
 import com.example.corespringsecurity.security.provider.FormAuthenticationProvider;
+import com.example.corespringsecurity.service.SecurityResourceService;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
@@ -41,17 +43,20 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private final AuthenticationSuccessHandler authenticationSuccessHandler;
     private final AuthenticationFailureHandler authenticationFailureHandler;
     private final PasswordEncoder passwordEncoder;
+    private final SecurityResourceService securityResourceService;
 
     public SecurityConfig(UserDetailsService userDetailsService,
                           AuthenticationDetailsSource<HttpServletRequest, WebAuthenticationDetails> authenticationDetailsSource,
                           @Qualifier("formAuthenticationSuccessHandler") AuthenticationSuccessHandler authenticationSuccessHandler,
                           @Qualifier("formAuthenticationFailureHandler") AuthenticationFailureHandler authenticationFailureHandler,
-                          PasswordEncoder passwordEncoder) {
+                          PasswordEncoder passwordEncoder,
+                          SecurityResourceService securityResourceService) {
         this.userDetailsService = userDetailsService;
         this.authenticationDetailsSource = authenticationDetailsSource;
         this.authenticationSuccessHandler = authenticationSuccessHandler;
         this.authenticationFailureHandler = authenticationFailureHandler;
         this.passwordEncoder = passwordEncoder;
+        this.securityResourceService = securityResourceService;
     }
 
     @Override
@@ -91,7 +96,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .defaultSuccessUrl("/")
                 .successHandler(authenticationSuccessHandler)
                 .failureHandler(authenticationFailureHandler);
-                //.permitAll();
+        //.permitAll();
 
         http
                 // FilterSecurityInterceptor 는 Request 에 "FILTER_APPLIED" attribute set 하여 한번만 처리 되도록 조치를 취한다.
@@ -141,7 +146,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Bean
     public FilterInvocationSecurityMetadataSource urlFilterInvocationSecurityMetadataSource() {
-        return new UrlFilterInvocationSecurityMetadataSource();
+        return new UrlFilterInvocationSecurityMetadataSource(urlResourcesMapFactoryBean().getObject());
     }
 
+    public UrlResourcesMapFactoryBean urlResourcesMapFactoryBean() {
+        return new UrlResourcesMapFactoryBean(securityResourceService);
+    }
 }
