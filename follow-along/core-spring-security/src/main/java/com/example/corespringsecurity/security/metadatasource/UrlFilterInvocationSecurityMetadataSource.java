@@ -1,10 +1,8 @@
 package com.example.corespringsecurity.security.metadatasource;
 
 import org.springframework.security.access.ConfigAttribute;
-import org.springframework.security.access.SecurityConfig;
 import org.springframework.security.web.FilterInvocation;
 import org.springframework.security.web.access.intercept.FilterInvocationSecurityMetadataSource;
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.security.web.util.matcher.RequestMatcher;
 
 import javax.servlet.http.HttpServletRequest;
@@ -23,12 +21,19 @@ import java.util.Set;
  */
 public class UrlFilterInvocationSecurityMetadataSource implements FilterInvocationSecurityMetadataSource {
 
+    /**
+     * RequestMatcher 순서가 중요하다.
+     * 따라서 Map 의 구현체로 LinkedHashMap 사용하였다.
+     */
     private final LinkedHashMap<RequestMatcher, List<ConfigAttribute>> requestMap;
 
     public UrlFilterInvocationSecurityMetadataSource(LinkedHashMap<RequestMatcher, List<ConfigAttribute>> requestMap) {
         this.requestMap = requestMap;
     }
 
+    /**
+     * 먼저 일치한 RequestMatcher 의 ConfigAttributes 반환
+     */
     @Override
     public Collection<ConfigAttribute> getAttributes(Object object) throws IllegalArgumentException {
         HttpServletRequest request = ((FilterInvocation) object).getRequest();
