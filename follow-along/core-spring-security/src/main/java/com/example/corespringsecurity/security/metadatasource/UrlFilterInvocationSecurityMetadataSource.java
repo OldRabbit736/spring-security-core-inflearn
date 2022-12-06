@@ -46,6 +46,8 @@ public class UrlFilterInvocationSecurityMetadataSource implements FilterInvocati
                 return entry.getValue();
             }
         }
+        // 주의: null 을 반환하게 되면 FilterSecurityInterceptor 의 beforeInvocation 에서 authorize 진행하지 않고 무조건 통과 시켜서
+        // 누구나 해당 리소스에 접근 가능하게 된다.
         return null;
     }
 
