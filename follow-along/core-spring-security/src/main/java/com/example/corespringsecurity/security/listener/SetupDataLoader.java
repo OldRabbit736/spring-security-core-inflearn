@@ -3,10 +3,11 @@ package com.example.corespringsecurity.security.listener;
 import com.example.corespringsecurity.domain.entity.Account;
 import com.example.corespringsecurity.domain.entity.Resources;
 import com.example.corespringsecurity.domain.entity.Role;
+import com.example.corespringsecurity.domain.entity.RoleHierarchy;
 import com.example.corespringsecurity.repository.ResourcesRepository;
+import com.example.corespringsecurity.repository.RoleHierarchyRepository;
 import com.example.corespringsecurity.repository.RoleRepository;
 import com.example.corespringsecurity.repository.UserRepository;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
@@ -19,7 +20,6 @@ import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 
 @Component
-@RequiredArgsConstructor
 @Slf4j
 public class SetupDataLoader implements ApplicationListener<ContextRefreshedEvent> {
 
@@ -29,6 +29,19 @@ public class SetupDataLoader implements ApplicationListener<ContextRefreshedEven
     private final ResourcesRepository resourcesRepository;
     private static final AtomicInteger count = new AtomicInteger(0);
     private final PasswordEncoder passwordEncoder;
+    private final RoleHierarchyRepository roleHierarchyRepository;
+
+    public SetupDataLoader(UserRepository userRepository,
+                           RoleRepository roleRepository,
+                           ResourcesRepository resourcesRepository,
+                           PasswordEncoder passwordEncoder,
+                           RoleHierarchyRepository roleHierarchyRepository) {
+        this.userRepository = userRepository;
+        this.roleRepository = roleRepository;
+        this.resourcesRepository = resourcesRepository;
+        this.passwordEncoder = passwordEncoder;
+        this.roleHierarchyRepository = roleHierarchyRepository;
+    }
 
     @Override
     @Transactional
@@ -47,7 +60,26 @@ public class SetupDataLoader implements ApplicationListener<ContextRefreshedEven
         Resources resources = createResourceIfNotFound("/admin/**", "", roles, "url");
         Account account = createUserIfNotFound("admin", "pass", "admin@gmail.com", 10, roles);
 
-        createRoleIfNotFound("ROLE_USER", "유저");
+        Role userRole = createRoleIfNotFound("ROLE_USER", "유저");
+        Role managerRole = createRoleIfNotFound("ROLE_MANAGER", "매니저");
+        createRoleHierarchyIfNotFound(managerRole, adminRole);
+        createRoleHierarchyIfNotFound(userRole, managerRole);
+    }
+
+    @Transactional
+    public void createRoleHierarchyIfNotFound(Role childRole, Role parentRole) {
+        RoleHierarchy roleHierarchy = roleHierarchyRepository.findByChildName(parentRole.getRoleName());
+        if (roleHierarchy == null) {
+            roleHierarchy = RoleHierarchy.builder().childName(parentRole.getRoleName()).build();
+        }
+        RoleHierarchy parentRoleHierarchy = roleHierarchyRepository.save(roleHierarchy);
+
+        roleHierarchy = roleHierarchyRepository.findByChildName(childRole.getRoleName());
+        if (roleHierarchy == null) {
+            roleHierarchy = RoleHierarchy.builder().childName(childRole.getRoleName()).build();
+        }
+        RoleHierarchy childRoleHierarchy = roleHierarchyRepository.save(roleHierarchy);
+        childRoleHierarchy.setParentName(parentRoleHierarchy);
     }
 
     @Transactional
