@@ -4,6 +4,7 @@ import com.example.corespringsecurity.domain.dto.ResourcesDto;
 import com.example.corespringsecurity.domain.entity.Resources;
 import com.example.corespringsecurity.domain.entity.Role;
 import com.example.corespringsecurity.repository.RoleRepository;
+import com.example.corespringsecurity.security.metadatasource.UrlFilterInvocationSecurityMetadataSource;
 import com.example.corespringsecurity.service.ResourcesService;
 import com.example.corespringsecurity.service.RoleService;
 import org.modelmapper.ModelMapper;
@@ -24,11 +25,13 @@ public class ResourcesController {
     private final RoleRepository roleRepository;
     private final RoleService roleService;
     private final ModelMapper modelMapper = new ModelMapper();
+    private final UrlFilterInvocationSecurityMetadataSource filterInvocationSecurityMetadataSource;
 
-    public ResourcesController(ResourcesService resourcesService, RoleRepository roleRepository, RoleService roleService) {
+    public ResourcesController(ResourcesService resourcesService, RoleRepository roleRepository, RoleService roleService, UrlFilterInvocationSecurityMetadataSource filterInvocationSecurityMetadataSource) {
         this.resourcesService = resourcesService;
         this.roleRepository = roleRepository;
         this.roleService = roleService;
+        this.filterInvocationSecurityMetadataSource = filterInvocationSecurityMetadataSource;
     }
 
     @GetMapping("/admin/resources")
@@ -46,6 +49,7 @@ public class ResourcesController {
         roles.add(role);
         resources.setRoleSet(roles);
         resourcesService.createResources(resources);
+        filterInvocationSecurityMetadataSource.reload();
         return "redirect:/admin/resources";
     }
 
@@ -69,5 +73,12 @@ public class ResourcesController {
         ResourcesDto resourcesDto = modelMapper.map(resources, ResourcesDto.class);
         model.addAttribute("resources", resourcesDto);
         return "admin/resource/detail";
+    }
+
+    @GetMapping("/admin/resources/delete/{id}")
+    public String removeResources(@PathVariable Long id) {
+        resourcesService.deleteResources(id);
+        filterInvocationSecurityMetadataSource.reload();
+        return "redirect:/admin/resources";
     }
 }

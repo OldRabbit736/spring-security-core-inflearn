@@ -1,5 +1,6 @@
 package com.example.corespringsecurity.security.metadatasource;
 
+import com.example.corespringsecurity.service.SecurityResourceService;
 import org.springframework.security.access.ConfigAttribute;
 import org.springframework.security.web.FilterInvocation;
 import org.springframework.security.web.access.intercept.FilterInvocationSecurityMetadataSource;
@@ -8,6 +9,7 @@ import org.springframework.security.web.util.matcher.RequestMatcher;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -25,10 +27,12 @@ public class UrlFilterInvocationSecurityMetadataSource implements FilterInvocati
      * RequestMatcher 순서가 중요하다.
      * 따라서 Map 의 구현체로 LinkedHashMap 사용하였다.
      */
-    private final LinkedHashMap<RequestMatcher, List<ConfigAttribute>> requestMap;
+    private LinkedHashMap<RequestMatcher, List<ConfigAttribute>> requestMap;
+    private final SecurityResourceService securityResourceService;
 
-    public UrlFilterInvocationSecurityMetadataSource(LinkedHashMap<RequestMatcher, List<ConfigAttribute>> requestMap) {
+    public UrlFilterInvocationSecurityMetadataSource(LinkedHashMap<RequestMatcher, List<ConfigAttribute>> requestMap, SecurityResourceService securityResourceService) {
         this.requestMap = requestMap;
+        this.securityResourceService = securityResourceService;
     }
 
     /**
@@ -55,5 +59,9 @@ public class UrlFilterInvocationSecurityMetadataSource implements FilterInvocati
     @Override
     public boolean supports(Class<?> clazz) {
         return FilterInvocation.class.isAssignableFrom(clazz);
+    }
+
+    public void reload() {
+        requestMap = securityResourceService.getResourceList();
     }
 }
