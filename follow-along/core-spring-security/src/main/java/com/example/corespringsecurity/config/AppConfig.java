@@ -1,5 +1,6 @@
 package com.example.corespringsecurity.config;
 
+import com.example.corespringsecurity.repository.AccessIpRepository;
 import com.example.corespringsecurity.repository.ResourcesRepository;
 import com.example.corespringsecurity.service.SecurityResourceService;
 import org.springframework.context.annotation.Bean;
@@ -10,7 +11,8 @@ import org.springframework.context.annotation.Configuration;
 public class AppConfig {
 
     @Bean
-    public SecurityResourceService securityResourceService(ResourcesRepository resourcesRepository) {
-        return new SecurityResourceService(resourcesRepository);
+    public SecurityResourceService securityResourceService(ResourcesRepository resourcesRepository,
+                                                           AccessIpRepository accessIpRepository) {
+        return new SecurityResourceService(resourcesRepository, accessIpRepository);
     }
 }

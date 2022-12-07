@@ -5,6 +5,7 @@ import com.example.corespringsecurity.security.filter.PermitAllFilter;
 import com.example.corespringsecurity.security.handler.FormAccessDeniedHandler;
 import com.example.corespringsecurity.security.metadatasource.UrlFilterInvocationSecurityMetadataSource;
 import com.example.corespringsecurity.security.provider.FormAuthenticationProvider;
+import com.example.corespringsecurity.security.voter.IpAddressVoter;
 import com.example.corespringsecurity.service.SecurityResourceService;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
@@ -158,8 +159,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private List<AccessDecisionVoter<?>> getAccessDecisionVoters() {
         List<AccessDecisionVoter<?>> accessDecisionVoters = new ArrayList<>();
+        // IP 확인을 가장 먼저 하도록
+        accessDecisionVoters.add(ipAddressVoter());
         accessDecisionVoters.add(roleHierarchyVoter());
         return accessDecisionVoters;
+    }
+
+    private AccessDecisionVoter<?> ipAddressVoter() {
+        return new IpAddressVoter(securityResourceService);
     }
 
     private AccessDecisionVoter<?> roleHierarchyVoter() {

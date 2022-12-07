@@ -1,9 +1,11 @@
 package com.example.corespringsecurity.security.listener;
 
+import com.example.corespringsecurity.domain.entity.AccessIp;
 import com.example.corespringsecurity.domain.entity.Account;
 import com.example.corespringsecurity.domain.entity.Resources;
 import com.example.corespringsecurity.domain.entity.Role;
 import com.example.corespringsecurity.domain.entity.RoleHierarchy;
+import com.example.corespringsecurity.repository.AccessIpRepository;
 import com.example.corespringsecurity.repository.ResourcesRepository;
 import com.example.corespringsecurity.repository.RoleHierarchyRepository;
 import com.example.corespringsecurity.repository.RoleRepository;
@@ -30,17 +32,20 @@ public class SetupDataLoader implements ApplicationListener<ContextRefreshedEven
     private static final AtomicInteger count = new AtomicInteger(0);
     private final PasswordEncoder passwordEncoder;
     private final RoleHierarchyRepository roleHierarchyRepository;
+    private final AccessIpRepository accessIpRepository;
 
     public SetupDataLoader(UserRepository userRepository,
                            RoleRepository roleRepository,
                            ResourcesRepository resourcesRepository,
                            PasswordEncoder passwordEncoder,
-                           RoleHierarchyRepository roleHierarchyRepository) {
+                           RoleHierarchyRepository roleHierarchyRepository,
+                           AccessIpRepository accessIpRepository) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.resourcesRepository = resourcesRepository;
         this.passwordEncoder = passwordEncoder;
         this.roleHierarchyRepository = roleHierarchyRepository;
+        this.accessIpRepository = accessIpRepository;
     }
 
     @Override
@@ -50,7 +55,16 @@ public class SetupDataLoader implements ApplicationListener<ContextRefreshedEven
         if (alreadySetup) return;
         log.info("Security resources set");
         setupSecurityResources();
+        setupAccessIpData();
         alreadySetup = true;
+    }
+
+    private void setupAccessIpData() {
+        AccessIp byIpAddress = accessIpRepository.findByIpAddress("0:0:0:0:0:0:0:1");
+        if (byIpAddress == null) {
+            AccessIp accessIp = new AccessIp("0:0:0:0:0:0:0:1");
+            accessIpRepository.save(accessIp);
+        }
     }
 
     private void setupSecurityResources() {
